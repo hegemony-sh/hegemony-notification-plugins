@@ -55,7 +55,7 @@ for CONTAINER in "${API_CONTAINER}" "${WORKER_CONTAINER}"; do
   docker exec -u root -it "${CONTAINER}" bash -lc "
 set -euo pipefail
 version=${VERSION}
-base=https://github.com/tvarohohlavy/hegemony-notification-plugins/releases/download/v\${version}
+base=https://github.com/hegemony-sh/hegemony-notification-plugins/releases/download/v\${version}
 tmp=\$(mktemp -d)
 cd \"\${tmp}\"
 curl -fsSLO \"\${base}/SHA256SUMS\"
