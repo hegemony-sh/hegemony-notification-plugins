@@ -86,11 +86,9 @@
         "assets": [
           "CHANGELOG.md",
           "uv.lock",
-          "packages/notification_sdk/pyproject.toml",
-          "plugins/notification_core_transports/pyproject.toml",
-          "plugins/notification_shoutrrr_presets/pyproject.toml",
-          "plugins/notification_webhook_presets/pyproject.toml",
-          "packages/notification_sdk/src/hegemony_notification_sdk/_version.py"
+          "packages/*/pyproject.toml",
+          "plugins/*/pyproject.toml",
+          "packages/*/src/*/_version.py"
         ],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
