@@ -128,7 +128,7 @@ wheels = [
 
 [[package]]
 name = "hegemony-notification-core-transports"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "plugins/notification_core_transports" }
 dependencies = [
     { name = "aiosmtplib" },
@@ -176,7 +176,7 @@ dev = [
 
 [[package]]
 name = "hegemony-notification-sdk"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "packages/notification_sdk" }
 dependencies = [
     { name = "pydantic" },
@@ -187,7 +187,7 @@ requires-dist = [{ name = "pydantic", specifier = ">=2.7" }]
 
 [[package]]
 name = "hegemony-notification-shoutrrr-presets"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "plugins/notification_shoutrrr_presets" }
 dependencies = [
     { name = "hegemony-notification-sdk" },
@@ -198,7 +198,7 @@ requires-dist = [{ name = "hegemony-notification-sdk", editable = "packages/noti
 
 [[package]]
 name = "hegemony-notification-webhook-presets"
-version = "0.2.0"
+version = "0.2.1"
 source = { editable = "plugins/notification_webhook_presets" }
 dependencies = [
     { name = "hegemony-notification-sdk" },
