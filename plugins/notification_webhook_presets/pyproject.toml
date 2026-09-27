@@ -4,11 +4,11 @@
 
 [project]
 name = "hegemony-notification-webhook-presets"
-version = "0.2.1"
+version = "0.3.0"
 description = "Webhook-based notification presets (Webex, Microsoft Teams) for Hegemony"
 license = { text = "AGPL-3.0-or-later" }
 requires-python = ">=3.11"
-dependencies = ["hegemony-notification-sdk==0.2.1"]
+dependencies = ["hegemony-notification-sdk==0.3.0"]
 
 [project.entry-points."hegemony.notification_providers"]
 webhook_presets = "hegemony_notification_webhook_presets:register"

@@ -1,3 +1,20 @@
+## [0.3.0](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.2.1...v0.3.0) (2026-09-27)
+
+### ⚠ BREAKING CHANGES
+
+* **core-transports:** HEGEMONY_SMTP_PORT, HEGEMONY_SMTP_USE_TLS,
+HEGEMONY_SMTP_USE_STARTTLS and HEGEMONY_SMTP_FROM are no longer read.
+Set the port, encryption and 'from' address on each email destination.
+The DEFAULT_SMTP_*_EXPR constants are replaced by the literal
+DEFAULT_SMTP_PORT, DEFAULT_SMTP_USE_TLS and DEFAULT_SMTP_USE_STARTTLS.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_018VLHH3sZFGswyVWhT3ZdJm
+
+### Bug Fixes
+
+* **core-transports:** stop reading HEGEMONY_SMTP_* from the worker environment ([650a4ba](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/650a4ba72ba5da167b6829b13f677456817c17fb))
+
 ## [0.2.1](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.2.0...v0.2.1) (2026-09-23)
 
 ### Bug Fixes
