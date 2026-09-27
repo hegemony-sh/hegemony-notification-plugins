@@ -97,13 +97,7 @@ async def test_shoutrrr_resolves_url_and_invokes_binary():
 async def test_email_resolves_config_and_sends():
     from hegemony_notification_core_transports import email
 
-    services = FakeServices(
-        secrets={
-            email.DEFAULT_SMTP_PORT_EXPR: "587",
-            email.DEFAULT_SMTP_USE_TLS_EXPR: "false",
-            email.DEFAULT_SMTP_USE_STARTTLS_EXPR: "true",
-        }
-    )
+    services = FakeServices()
     config = {"to": ["ops@example.com"], "from": "noreply@example.com", "smtp_host_ref": "smtp.x"}
     with patch("aiosmtplib.send", new_callable=AsyncMock) as send_mock:
         await email.send(_ctx(config, services))
@@ -111,6 +105,57 @@ async def test_email_resolves_config_and_sends():
     kwargs = send_mock.call_args.kwargs
     assert kwargs["hostname"] == "smtp.x"
     assert kwargs["port"] == 587
+    assert kwargs["use_tls"] is False
+    assert kwargs["start_tls"] is True
+    # Empty fields take the fixed defaults directly; only config values reach the host.
+    assert {ref for ref, _ in services.resolved} == {
+        "smtp.x",
+        "ops@example.com",
+        "noreply@example.com",
+    }
+
+
+@pytest.mark.asyncio
+async def test_email_uses_the_configured_port_and_encryption():
+    from hegemony_notification_core_transports import email
+
+    services = FakeServices(secrets={"{{ secret('vault://smtp/port') }}": "465"})
+    config = {
+        "to": ["ops@example.com"],
+        "from": "noreply@example.com",
+        "smtp_host_ref": "smtp.x",
+        "smtp_port_ref": "{{ secret('vault://smtp/port') }}",
+        "smtp_use_tls_ref": "true",
+        "smtp_use_starttls_ref": "false",
+    }
+    with patch("aiosmtplib.send", new_callable=AsyncMock) as send_mock:
+        await email.send(_ctx(config, services))
+    kwargs = send_mock.call_args.kwargs
+    assert kwargs["port"] == 465
+    assert kwargs["use_tls"] is True
+    assert kwargs["start_tls"] is False
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("sender", [None, "", "   "])
+async def test_email_without_a_sender_is_refused(sender):
+    from hegemony_notification_core_transports import email
+
+    config: dict[str, Any] = {"to": ["ops@example.com"], "smtp_host_ref": "smtp.x"}
+    if sender is not None:
+        config["from"] = sender
+    with (
+        patch("aiosmtplib.send", new_callable=AsyncMock) as send_mock,
+        pytest.raises(ValueError, match="sender address"),
+    ):
+        await email.send(_ctx(config, FakeServices()))
+    send_mock.assert_not_awaited()
+
+
+def test_email_schema_requires_sender_and_host():
+    from hegemony_notification_core_transports import email
+
+    assert set(email.CONFIG_SCHEMA["required"]) == {"to", "from", "smtp_host_ref"}
 
 
 @pytest.mark.asyncio

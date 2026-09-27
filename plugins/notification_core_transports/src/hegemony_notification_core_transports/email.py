@@ -4,10 +4,10 @@
 
 """Email transport using aiosmtplib.
 
-SMTP settings come from destination config fields (``smtp_*_ref``, ``from``). Empty fields
-fall back to ``HEGEMONY_SMTP_*`` env-var defaults, resolved through the host's template
-engine. Secret references (``{{ env() }}`` / ``{{ file() }}`` / ``{{ secret() }}``) are
-resolved by the injected services, never by this plugin directly.
+Every SMTP setting comes from the destination config (``smtp_*_ref``, ``from``). An empty
+port, TLS or STARTTLS field takes a fixed default (587, off, on); the sender and host have
+none and must be set. Secret references (``{{ secret() }}``) are resolved by the injected
+services, never by this plugin directly.
 """
 
 import logging
@@ -18,12 +18,10 @@ from hegemony_notification_sdk import NotificationSendContext, NotificationServi
 
 logger = logging.getLogger(__name__)
 
-# Jinja expression defaults — env var with hardcoded fallback, resolved when the field is
-# left empty so operators can override site-wide via ``HEGEMONY_SMTP_*``.
-DEFAULT_SMTP_PORT_EXPR = "{{ env('HEGEMONY_SMTP_PORT', '587') | int }}"
-DEFAULT_SMTP_USE_TLS_EXPR = "{{ env('HEGEMONY_SMTP_USE_TLS', 'false') | bool }}"
-DEFAULT_SMTP_USE_STARTTLS_EXPR = "{{ env('HEGEMONY_SMTP_USE_STARTTLS', 'true') | bool }}"
-DEFAULT_SMTP_FROM_EXPR = "{{ env('HEGEMONY_SMTP_FROM') }}"
+# Used as-is when the field is left empty; never passed to the host's template engine.
+DEFAULT_SMTP_PORT = "587"
+DEFAULT_SMTP_USE_TLS = "false"
+DEFAULT_SMTP_USE_STARTTLS = "true"
 
 
 async def _resolve_config_value(
@@ -34,12 +32,10 @@ async def _resolve_config_value(
     required: bool = False,
     default: str | None = None,
 ) -> str | None:
-    """Resolve a config value (template ref or literal), with an optional Jinja default."""
+    """Resolve a config value (template ref or literal), or return ``default`` when empty."""
     ref = services.validate_secret_ref(ref, field_name=field_name, required=required)
     if ref is None:
-        if default is None:
-            return None
-        ref = default
+        return default
     value = await services.resolve_secret_ref(ref, source=f"notification.email.{field_name}")
     if value is None:
         raise ValueError(f"'{ref}' could not be resolved for '{field_name}'")
@@ -71,19 +67,19 @@ async def _get_smtp_config(
         services,
         config.get("smtp_port_ref"),
         field_name="smtp_port_ref",
-        default=DEFAULT_SMTP_PORT_EXPR,
+        default=DEFAULT_SMTP_PORT,
     )
     use_tls_value = await _resolve_config_value(
         services,
         config.get("smtp_use_tls_ref"),
         field_name="smtp_use_tls_ref",
-        default=DEFAULT_SMTP_USE_TLS_EXPR,
+        default=DEFAULT_SMTP_USE_TLS,
     )
     start_tls_value = await _resolve_config_value(
         services,
         config.get("smtp_use_starttls_ref"),
         field_name="smtp_use_starttls_ref",
-        default=DEFAULT_SMTP_USE_STARTTLS_EXPR,
+        default=DEFAULT_SMTP_USE_STARTTLS,
     )
     return {
         "host": host,
@@ -127,13 +123,9 @@ async def send(ctx: NotificationSendContext) -> None:
     if cc_addrs:
         msg["Cc"] = ", ".join(cc_addrs)
 
-    from_addr = await _resolve_config_value(
-        services, config.get("from"), field_name="from", default=DEFAULT_SMTP_FROM_EXPR
-    )
-    if not from_addr:
-        raise ValueError(
-            "Email sender address is required (set 'from' in config or HEGEMONY_SMTP_FROM env var)"
-        )
+    from_addr = await _resolve_config_value(services, config.get("from"), field_name="from")
+    if not from_addr or not from_addr.strip():
+        raise ValueError("Email destination requires a sender address: set 'from' in its config")
     msg["From"] = from_addr
 
     # Title/body (incl. any per-destination override) are finalized by the host before
@@ -163,11 +155,11 @@ async def send(ctx: NotificationSendContext) -> None:
 
 CONFIG_SCHEMA = {
     "type": "object",
-    "required": ["to"],
+    "required": ["to", "from", "smtp_host_ref"],
     "properties": {
         "to": {"type": "array", "items": {"type": "string"}, "title": "To"},
         "cc": {"type": "array", "items": {"type": "string"}, "title": "Cc"},
-        "from": {"type": "string", "title": "From (optional)"},
+        "from": {"type": "string", "title": "From"},
         "smtp_host_ref": {"type": "string", "x_secret_ref": True, "title": "SMTP host"},
         "smtp_port_ref": {"type": "string", "x_secret_ref": True, "title": "SMTP port"},
         "smtp_username_ref": {"type": "string", "x_secret_ref": True, "title": "SMTP username"},
