@@ -10,7 +10,7 @@ The notification transports Hegemony ships with, packaged as a plugin:
 
 | Destination | Notes |
 |-------------|-------|
-| `email` | SMTP via `aiosmtplib`; site-wide `HEGEMONY_SMTP_*` env defaults |
+| `email` | SMTP via `aiosmtplib`; every setting comes from the destination config |
 | `shoutrrr` | Raw Shoutrrr service URL (needs the `shoutrrr` binary) |
 | `outgoing_webhook` | HTTP webhook with auth, TLS, HMAC signing, retries (`httpx`) |
 
