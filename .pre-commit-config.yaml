@@ -36,6 +36,10 @@ repos:
     hooks:
       - id: typos
         name: "Checks: typo scan"
+        # Report only: the hook's default arguments include --write-changes, which
+        # edits files in place, and a correction is a human call. --force-exclude
+        # keeps the exclusions in typos.toml in force for the files pre-commit names.
+        args: ["--force-exclude"]
 
   # GitHub Actions security scanner
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
@@ -47,7 +51,7 @@ repos:
 
   # GitHub Actions workflow syntax validator
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.36.0
+    rev: 0.38.2
     hooks:
       - id: check-github-workflows
         name: "CI: GitHub workflow schema validation"
