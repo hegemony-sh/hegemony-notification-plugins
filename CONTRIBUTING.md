@@ -22,6 +22,10 @@ leaked secrets, exploit details, or suspected compromise.
 
 ## Licensing and DCO
 
+The [Code of Conduct](CODE_OF_CONDUCT.md) is adapted third-party documentation
+under CC-BY-4.0; preserve its attribution and license when editing it. The
+source-code licensing and contribution rules below continue to apply to code.
+
 This repository is part of the Hegemony project. Its source is licensed under
 `AGPL-3.0-or-later`. See [LICENSE](LICENSE) and [LICENSING.md](LICENSING.md).
 Your contribution is licensed under the same terms, and
@@ -79,8 +83,8 @@ uv run python scripts/smoke_install_wheels.py
 the workflow scan (zizmor), the secret scan (gitleaks) and commitlint. CI runs
 the last three on every pull request as well.
 
-Every file carries an SPDX header: a copyright line and the licence
-identifier `AGPL-3.0-or-later`. `reuse lint` fails without one. Copy the header
+Every first-party code file carries an SPDX header: a copyright line and the
+licence identifier `AGPL-3.0-or-later`. `reuse lint` fails without one. Copy the header
 of a neighbouring file. A file that cannot hold a comment is annotated in
 `REUSE.toml`.
 
