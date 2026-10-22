@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2025-2026 Jakub Trávník <jakub.travnik@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# typos configuration - https://github.com/crate-ci/typos
+# Add false positives here. The pre-commit hook passes --force-exclude, which is
+# what makes the exclusions below apply to files it names explicitly.
+
+[files]
+extend-exclude = [
+    # Written by semantic-release on every release, and not to be edited by
+    # hand: the abbreviated commit hashes in its links trip the checker, and a
+    # correction would be lost with the next release.
+    "CHANGELOG.md",
+]

@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2025-2026 Jakub Trávník <jakub.travnik@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+*       @hegemony-sh/maintainers
+
+# What runs with a token or decides what is published: the workflows and their
+# policy, the release configuration and the scripts it runs, the secret-scan
+# configuration, and the files that say how to report a vulnerability.
+/.github/workflows/             @hegemony-sh/maintainers
+/.github/zizmor.yml             @hegemony-sh/maintainers
+/.github/CODEOWNERS             @hegemony-sh/maintainers
+/.releaserc.json                @hegemony-sh/maintainers
+/scripts/                       @hegemony-sh/maintainers
+/.gitleaks.toml                 @hegemony-sh/maintainers
+/SECURITY.md                    @hegemony-sh/maintainers

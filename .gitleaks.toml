@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025-2026 Jakub Trávník <jakub.travnik@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Gitleaks configuration: extends the default ruleset. Read by the pre-commit
+# hook and by the `security-scans` job in .github/workflows/ci.yml. Add an
+# allowlist here only for a finding that is not a secret, with the reason.
+# Docs: https://github.com/gitleaks/gitleaks#configuration
+
+[extend]
+useDefault = true

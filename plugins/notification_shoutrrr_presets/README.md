@@ -24,10 +24,11 @@ secret values.
 
 ## Install
 
-```bash
-pip install hegemony-notification-shoutrrr-presets
-```
+The wheel is a release asset of this repository, not a PyPI package. Install it
+into both the API and the worker as described in
+[Install From A Release](../../README.md#install-from-a-release), then restart
+both.
 
-The worker discovers it automatically via the
+The host discovers it automatically via the
 `hegemony.notification_providers` entry-point group. Requires the host's
 built-in `shoutrrr` transport and the `shoutrrr` binary.

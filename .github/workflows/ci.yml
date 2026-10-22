@@ -23,9 +23,21 @@ env:
 # Runner selection, as in the platform repository: the CI_RUNNER repository or
 # organization variable names the runner label (e.g. `self-hosted`); unset,
 # jobs fall back to GitHub-hosted ubuntu-latest, so one variable flips the
-# workflow back if the self-hosted host is down. The release workflow is not
-# included on purpose: it writes the release token into its workspace, which
-# must not outlive the job on a non-ephemeral runner.
+# workflow back if the self-hosted host is down. GitHub-hosted runners are free
+# for a public repository, so leaving the variable unset costs nothing. No job
+# here needs the self-hosted host: each runs on a stock ubuntu-latest image.
+#
+# WARNING, fork pull requests. This repository is public, so anyone can open a
+# pull request from a fork, and this workflow starts on `pull_request` and runs
+# the version of the file the pull request carries (which can name any runner
+# itself, so nothing in this file can prevent it). With CI_RUNNER set to
+# `self-hosted`, that is a fork's code running on our own host. Either leave
+# CI_RUNNER unset so every job runs on a GitHub-hosted runner, or keep the
+# runners and require approval for fork pull request workflows from all outside
+# collaborators (Settings -> Actions -> General).
+#
+# The release workflow is not included on purpose: it writes the release token
+# into its workspace, which must not outlive the job on a non-ephemeral runner.
 jobs:
   commit-lint:
     name: Lint Commit Messages
@@ -84,3 +96,61 @@ jobs:
 
       - name: Smoke install wheels
         run: uv run python scripts/smoke_install_wheels.py
+
+  # The scans a pull request from a fork would otherwise skip: gitleaks and
+  # zizmor are also pre-commit hooks, which nothing enforces for a contributor
+  # who never installed them. Same pattern as the platform repository's
+  # `security-scans` job.
+  security-scans:
+    name: Security Scans (gitleaks, zizmor)
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          # gitleaks reads the commits the pull request or push adds.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7
+        with:
+          version: "0.9.28"
+
+      # The same version as the pre-commit hook. A release binary checked
+      # against the digest the gitleaks project publishes with it, not the
+      # gitleaks-action, which needs a licence key for organization repositories.
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: "8.21.2"
+          GITLEAKS_SHA256: 5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba
+        run: |
+          archive="$RUNNER_TEMP/gitleaks.tar.gz"
+          curl -sSfL -o "$archive" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  ${archive}" | sha256sum -c -
+          tar -xzf "$archive" -C "$RUNNER_TEMP" gitleaks
+
+      # The commits this pull request (or push) adds, like the pre-commit hook
+      # checks each commit's changes: a secret already in history is not this
+      # change's to answer for.
+      - name: Scan the new commits for secrets (gitleaks)
+        env:
+          RANGE_START: ${{ github.event.pull_request.base.sha || github.event.before }}
+          RANGE_END: ${{ github.event.pull_request.head.sha || github.sha }}
+        # A push that creates the branch reports an all-zero `before`; with
+        # nothing to diff against, the scan reads every commit reachable from
+        # the pushed tip, since all of them are new to the branch.
+        run: |
+          if [ -z "${RANGE_START//0/}" ]; then
+            log_opts="$RANGE_END"
+          else
+            log_opts="$RANGE_START..$RANGE_END"
+          fi
+          "$RUNNER_TEMP/gitleaks" git --log-opts="$log_opts" --redact --no-banner .
+
+      # Offline, as the pre-commit hook runs without a GitHub token.
+      - name: GitHub Actions policy scan (zizmor)
+        run: uvx zizmor@1.22.0 --offline --config .github/zizmor.yml .github/workflows
