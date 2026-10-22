@@ -50,8 +50,8 @@ def test_webex_builds_outgoing_webhook_post_with_markdown():
 
 
 def test_teams_builds_outgoing_webhook_config_with_adaptive_card():
-    out = _build("teams_power_automate", {"url": "https://example.powerautomate.com/workflows/x"})
-    assert out["url"] == "https://example.powerautomate.com/workflows/x"
+    out = _build("teams_power_automate", {"url": "https://hooks.example.com/workflows/x"})
+    assert out["url"] == "https://hooks.example.com/workflows/x"
     assert out["method"] == "POST"
     assert out["auth_type"] == "none"
     # The payload template is a valid Adaptive Card message envelope with title/body slots.
