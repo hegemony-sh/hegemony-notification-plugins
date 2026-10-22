@@ -32,8 +32,9 @@ secret values.
 
 ## Install
 
-```bash
-pip install hegemony-notification-webhook-presets
-```
+The wheel is a release asset of this repository, not a PyPI package. Install it
+into both the API and the worker as described in
+[Install From A Release](../../README.md#install-from-a-release), then restart
+both.
 
-The worker discovers it via the `hegemony.notification_providers` entry-point group.
+The host discovers it via the `hegemony.notification_providers` entry-point group.

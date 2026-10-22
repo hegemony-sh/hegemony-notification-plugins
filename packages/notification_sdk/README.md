@@ -16,12 +16,19 @@ exposes a `register(registry)` callable under the
 
 ```toml
 # In your plugin's pyproject.toml
+[project]
+dependencies = ["hegemony-notification-sdk>=0.3,<0.4"]
+
 [project.entry-points."hegemony.notification_providers"]
 my_plugin = "my_plugin:register"
-
-[project.dependencies]
-hegemony-notification-sdk = ">=0.1,<0.2"
 ```
+
+The SDK is released together with the plugins in this repository, as a wheel
+attached to each GitHub release; it is not published on PyPI. While the major
+version is 0, an incompatible change to the contract is released as a new minor
+version, so depend on one minor line. The repository
+[README](../../README.md#develop-a-notification-plugin) walks through a complete
+transport and how to install a plugin into a Hegemony instance.
 
 ## Presets (recommended)
 

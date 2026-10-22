@@ -5,26 +5,64 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # hegemony-notification-plugins
 
-Standalone release repo for Hegemony notification plugin packages:
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
+[![CI](https://github.com/hegemony-sh/hegemony-notification-plugins/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/hegemony-sh/hegemony-notification-plugins/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/hegemony-sh/hegemony-notification-plugins?label=Release)](https://github.com/hegemony-sh/hegemony-notification-plugins/releases)
 
-- `hegemony-notification-sdk`
-- `hegemony-notification-core-transports`
-- `hegemony-notification-shoutrrr-presets`
-- `hegemony-notification-webhook-presets`
+The notification SDK and plugin wheels for
+[Hegemony](https://github.com/hegemony-sh/hegemony), a self-hosted,
+[Temporal](https://temporal.io/)-based orchestration platform for long-running
+infrastructure changes. Hegemony sends notifications (run and approval events,
+and the `flow.notify` step) through **destination types**. This repository holds
+the SDK those types are written against, the transports Hegemony ships with, and
+two optional packs of friendly presets:
 
-The SDK and all plugin wheels are released together under one semver tag such as
-`v0.2.0`, cut automatically when a releasable change merges to `main`. Plugin wheels depend on the exact SDK version from the same release.
+| Package | What it is | Installed |
+|---------|------------|-----------|
+| `hegemony-notification-sdk` | The plugin contract: registry protocol, injected platform services, ABI version. Depends only on `pydantic`. | With the platform |
+| `hegemony-notification-core-transports` | The `email` (SMTP), `shoutrrr` and `outgoing_webhook` transports. | With the platform |
+| `hegemony-notification-shoutrrr-presets` | Telegram, Discord, Slack and Pushover destinations over `shoutrrr`. | Opt-in |
+| `hegemony-notification-webhook-presets` | Webex incoming webhook and Teams (Power Automate) destinations over `outgoing_webhook`. | Opt-in |
 
-A plugin depends only on `hegemony-notification-sdk` (which depends only on `pydantic`)
-and exposes a `register(registry)` callable under the `hegemony.notification_providers`
-entry-point group. The host injects a `NotificationServices` (secret resolution, template
-rendering) into each transport, so plugins never import Hegemony internals. See the
-[SDK README](packages/notification_sdk/README.md).
+The packages are published as GitHub release assets (wheels and a `SHA256SUMS`
+file), not on PyPI. See [Install From A Release](#install-from-a-release).
 
-Licensed under `AGPL-3.0-or-later`. See [Licensing](LICENSING.md).
+## How it relates to the platform
 
-Every commit needs a DCO sign-off (`git commit -s`). See
-[Contributing](CONTRIBUTING.md).
+The platform ([`hegemony-sh/hegemony`](https://github.com/hegemony-sh/hegemony))
+owns the notification feature: destinations, subscriptions, the worker-side
+dispatch, secret resolution and template rendering. It does not contain any
+transport code. Every destination type, the built-in ones included, is loaded
+from a plugin through the `hegemony.notification_providers` entry-point group.
+
+A plugin depends only on `hegemony-notification-sdk` and exposes a
+`register(registry)` callable. The host injects a `NotificationServices` (secret
+resolution, template rendering) into each transport, so plugins never import
+Hegemony internals. See the [SDK README](packages/notification_sdk/README.md).
+
+- The SDK and all plugin wheels are released together under one semver tag,
+  `vX.Y.Z`, cut automatically when a releasable change merges to `main`. Every
+  package carries that version, and plugin wheels depend on the exact SDK
+  version from the same release.
+- The platform pins the release tag it is built and tested against in its
+  `.github/plugin-pins.json`, and its own release is refused when a pin is not a
+  released tag.
+- The version is `0.x`: the plugin contract (`SDK_ABI_VERSION`) can change in a
+  minor release. Breaking changes are listed in the [changelog](CHANGELOG.md).
+
+## Documentation
+
+- The documentation site is [hegemony.sh](https://hegemony.sh).
+- [Notifications](https://github.com/hegemony-sh/hegemony/blob/main/docs/features/notifications.md)
+  in the platform documentation describes the destination types, their
+  configuration, templates and troubleshooting.
+- [Installed Plugins](https://github.com/hegemony-sh/hegemony/blob/main/docs/guides/plugins.md)
+  describes the **Settings → Installed Plugins** page, which lists every package
+  and destination type an instance has loaded.
+- Per package: the [SDK](packages/notification_sdk/README.md),
+  [core transports](plugins/notification_core_transports/README.md),
+  [Shoutrrr presets](plugins/notification_shoutrrr_presets/README.md) and
+  [webhook presets](plugins/notification_webhook_presets/README.md).
 
 ## What is auto-installed vs opt-in
 
@@ -43,10 +81,14 @@ reloads its entry points. Do not use `--system`; Hegemony runs from `/opt/venv`.
 
 Released wheels are published with a `SHA256SUMS` file. Verify downloaded wheels before
 installing them. The example installs both preset packs into the API and worker; remove any
-wheel names a deployment should not enable.
+wheel names a deployment should not enable. Set `VERSION` to the release you want: the
+newest is on the [Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases),
+and the release a platform version is built against is pinned in the platform's
+`.github/plugin-pins.json`. The SDK and the core transports are already in the Hegemony
+images, which is why the example installs with `--no-deps`.
 
 ```bash
-VERSION=0.2.0
+VERSION=0.3.0
 API_CONTAINER=<your API container name>
 WORKER_CONTAINER=<your worker container name>
 
@@ -92,6 +134,102 @@ done
 
 These Docker-command installs are runtime changes. Re-run them after recreating a container
 or replacing the image.
+
+## Develop A Notification Plugin
+
+A notification plugin is a wheel that exposes `register(registry)` under the
+`hegemony.notification_providers` entry-point group and depends only on
+`hegemony-notification-sdk`. There are two shapes:
+
+- A **preset** adds a friendly destination type over an existing transport. It
+  contributes a config schema and a pure, synchronous `build_config` that rewrites the
+  friendly fields into the base transport's config. Start from the
+  [Shoutrrr presets](plugins/notification_shoutrrr_presets/README.md) and the
+  [SDK README](packages/notification_sdk/README.md).
+- A **native transport** has its own `send` coroutine, for channels that no existing
+  transport can express. The example below is one.
+
+```python
+# my_plugin/__init__.py
+import httpx
+
+from hegemony_notification_sdk import NotificationPluginRegistry, NotificationSendContext
+
+
+async def send(ctx: NotificationSendContext) -> None:
+    services = ctx.services
+    ref = services.validate_secret_ref(
+        ctx.config.get("url_ref"), field_name="url_ref", required=True
+    )
+    url = await services.resolve_secret_ref(ref, source="notification.example_chat")
+    if not url:
+        raise ValueError(f"Could not resolve '{ref}' - ensure the referenced secret exists.")
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(url, json={"text": f"{ctx.title}\n\n{ctx.body}"})
+    if response.is_error:
+        # Never put the resolved URL or token into an error message or a log line.
+        raise RuntimeError(f"Example Chat answered HTTP {response.status_code}")
+
+
+def register(registry: NotificationPluginRegistry) -> None:
+    registry.register_destination_type(
+        destination_type="example_chat",
+        display_name="Example Chat",
+        description="Post to an Example Chat incoming webhook.",
+        send=send,
+        config_schema={
+            "type": "object",
+            "required": ["url_ref"],
+            "properties": {
+                "url_ref": {
+                    "type": "string",
+                    "x_secret_ref": True,
+                    "title": "Webhook URL (secret reference)",
+                },
+            },
+        },
+    )
+```
+
+```toml
+# pyproject.toml
+[project]
+name = "my-notification-plugin"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["hegemony-notification-sdk>=0.3,<0.4", "httpx>=0.27"]
+
+[project.entry-points."hegemony.notification_providers"]
+my_plugin = "my_plugin:register"
+```
+
+The rules a plugin follows:
+
+- Import nothing from Hegemony. Secret resolution and template rendering come from the
+  injected `NotificationServices`; a destination field that holds a secret is a secret
+  reference (`x_secret_ref` in its schema), validated with `validate_secret_ref` and
+  resolved with `resolve_secret_ref` at send time.
+- Do not write a resolved secret, token or webhook URL to a log or an error message.
+- `build_config` of a preset is pure and synchronous: no I/O, no secret resolution.
+- Raise on failure. The host catches the exception, counts the destination as failed and
+  logs the exception's message, which is one more reason to keep secrets out of it.
+- Test against an in-memory `NotificationServices`, as
+  [`tests/test_core_transports.py`](tests/test_core_transports.py) does with its
+  `FakeServices`. Use example hosts (`example.com`) and synthetic credentials in tests,
+  never a real endpoint.
+
+The SDK is not on PyPI. To develop against it, install a release wheel, or install it from
+this repository at a release tag:
+
+```bash
+uv pip install "git+https://github.com/hegemony-sh/hegemony-notification-plugins@v0.3.0#subdirectory=packages/notification_sdk"
+```
+
+Install your wheel into both the API and the worker, as in
+[Install From A Release](#install-from-a-release), and restart both. The new destination
+type then appears under **Settings → Installed Plugins** and in the destination form of
+the **Notifications** screen. `SDK_ABI_VERSION` is the registration contract's version;
+the platform exposes its value as `registry.api_version`, so a plugin can check it.
 
 ## Development
 
