@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2025-2026 Jakub Trávník <jakub.travnik@gmail.com>
+SPDX-FileCopyrightText: 2025-2026 Rexonix s.r.o.
+SPDX-FileContributor: Jakub Trávník <jakub.travnik@gmail.com>
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -26,6 +27,13 @@ This repository is part of the Hegemony project. Its source is licensed under
 Your contribution is licensed under the same terms, and
 contributing it transfers no copyright to the project. There is no Contributor
 License Agreement.
+
+The project's own files name Rexonix s.r.o. as the copyright holder, and those
+with an SPDX header also name Jakub Trávník as the author (see
+[LICENSING.md](LICENSING.md)). If you do not write on behalf of Rexonix s.r.o.,
+you keep the copyright in your contribution and may add your own
+`SPDX-FileCopyrightText` line to the header of a file you change, as REUSE
+recommends.
 
 Every commit must be signed off under the
 [Developer Certificate of Origin](https://developercertificate.org/) (DCO),
@@ -75,6 +83,20 @@ Every file carries an SPDX header: a copyright line and the licence
 identifier `AGPL-3.0-or-later`. `reuse lint` fails without one. Copy the header
 of a neighbouring file. A file that cannot hold a comment is annotated in
 `REUSE.toml`.
+
+A first-party file with an SPDX header names Rexonix s.r.o. as the copyright
+holder and Jakub Trávník as the author, in the file's own comment syntax:
+
+<!-- REUSE-IgnoreStart -->
+
+```python
+# SPDX-FileCopyrightText: 2025-2026 Rexonix s.r.o.
+# SPDX-FileContributor: Jakub Trávník <jakub.travnik@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+```
+
+<!-- REUSE-IgnoreEnd -->
 
 ## Pull requests and commit messages
 
