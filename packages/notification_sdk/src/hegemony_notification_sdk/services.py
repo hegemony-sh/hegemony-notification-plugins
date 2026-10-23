@@ -27,7 +27,6 @@ class NotificationServices(Protocol):
 
     async def resolve_secret_ref(self, ref: str | None, *, source: str) -> str | None:
         """Resolve an opaque secret/template reference to its value (platform-side)."""
-        ...
 
     def validate_secret_ref(
         self, ref: Any, *, field_name: str, required: bool = False
@@ -37,7 +36,6 @@ class NotificationServices(Protocol):
         Raises if ``required`` and missing, or if a raw (unprotected) literal is supplied
         where a secret reference is expected. Pure: performs no resolution or I/O.
         """
-        ...
 
     def render_message(
         self, template: str, *, title: str, body: str, escape_json_strings: bool = False
@@ -47,15 +45,12 @@ class NotificationServices(Protocol):
         ``escape_json_strings`` JSON-escapes interpolated values for templates that emit
         a JSON document (used by webhook payload templates).
         """
-        ...
 
     async def render_template(self, template: str) -> str:
         """Resolve a full-scope template string (vars, env, secrets) to its value."""
-        ...
 
     def contains_template(self, value: str) -> bool:
         """Whether ``value`` contains template (Jinja) expressions."""
-        ...
 
 
 @dataclass(frozen=True, slots=True)
