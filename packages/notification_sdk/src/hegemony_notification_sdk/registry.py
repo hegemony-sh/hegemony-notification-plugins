@@ -53,7 +53,6 @@ class NotificationPluginRegistry(Protocol):
         config_schema: dict[str, Any] | None = None,
     ) -> None:
         """Register a native destination type with its own ``send`` implementation."""
-        ...
 
     def register_preset(
         self,
@@ -66,4 +65,3 @@ class NotificationPluginRegistry(Protocol):
         config_schema: dict[str, Any] | None = None,
     ) -> None:
         """Register a friendly preset that rewrites its config onto a base transport."""
-        ...

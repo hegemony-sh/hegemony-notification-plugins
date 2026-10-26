@@ -9,6 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
 [![CI](https://github.com/hegemony-sh/hegemony-notification-plugins/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/hegemony-sh/hegemony-notification-plugins/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/hegemony-sh/hegemony-notification-plugins?label=Release)](https://github.com/hegemony-sh/hegemony-notification-plugins/releases)
+[![FOSSA license scan](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins?ref=badge_shield&issueType=license)
+[![FOSSA security scan](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins?ref=badge_shield&issueType=security)
+[![REUSE status](https://api.reuse.software/badge/github.com/hegemony-sh/hegemony-notification-plugins)](https://api.reuse.software/info/github.com/hegemony-sh/hegemony-notification-plugins)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/hegemony-sh/hegemony-notification-plugins/badge)](https://scorecard.dev/viewer/?uri=github.com/hegemony-sh/hegemony-notification-plugins)
 
 The notification SDK and plugin wheels for
 [Hegemony](https://github.com/hegemony-sh/hegemony), a self-hosted,
