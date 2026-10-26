@@ -1,3 +1,9 @@
+## [0.3.2](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.3.1...v0.3.2) (2026-10-26)
+
+### Bug Fixes
+
+* **deps:** raise the aiosmtplib floor past its advisories ([b854cb9](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/b854cb920c7098a647d6c48ee2523ed20f106926))
+
 ## [0.3.1](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.3.0...v0.3.1) (2026-10-26)
 
 ### Bug Fixes

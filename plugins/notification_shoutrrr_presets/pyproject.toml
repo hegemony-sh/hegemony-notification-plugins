@@ -5,12 +5,12 @@
 
 [project]
 name = "hegemony-notification-shoutrrr-presets"
-version = "0.3.1"
+version = "0.3.2"
 description = "Friendly Shoutrrr-backed notification presets for Hegemony"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE-*.txt"]
 requires-python = ">=3.11"
-dependencies = ["hegemony-notification-sdk==0.3.1"]
+dependencies = ["hegemony-notification-sdk==0.3.2"]
 
 [project.entry-points."hegemony.notification_providers"]
 shoutrrr_presets = "hegemony_notification_shoutrrr_presets:register"
