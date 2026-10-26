@@ -1,3 +1,11 @@
+## [0.3.1](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.3.0...v0.3.1) (2026-10-26)
+
+### Bug Fixes
+
+* **deps:** upgrade virtualenv to 21.14.13 for two public advisories ([04de771](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/04de771d6b79322c02255be1c1eea1db05ce5cdf))
+* **packaging:** ship the AGPL-3.0 text in every wheel ([4d05ae6](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/4d05ae62577b4396e62cd8a6a2e5c09ebeaac74a))
+* **release:** stop release comments from failing a published release ([53c5165](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/53c5165e578a04ca20a52dea2d0612c157949836))
+
 ## [0.3.0](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.2.1...v0.3.0) (2026-09-27)
 
 ### ⚠ BREAKING CHANGES
