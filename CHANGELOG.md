@@ -22,8 +22,6 @@ Set the port, encryption and 'from' address on each email destination.
 The DEFAULT_SMTP_*_EXPR constants are replaced by the literal
 DEFAULT_SMTP_PORT, DEFAULT_SMTP_USE_TLS and DEFAULT_SMTP_USE_STARTTLS.
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_018VLHH3sZFGswyVWhT3ZdJm
 
 ### Bug Fixes
 
