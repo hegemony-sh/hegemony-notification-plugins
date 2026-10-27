@@ -86,14 +86,14 @@ reloads its entry points. Do not use `--system`; Hegemony runs from `/opt/venv`.
 
 Released wheels are published with a `SHA256SUMS` file. Verify downloaded wheels before
 installing them. The example installs both preset packs into the API and worker; remove any
-wheel names a deployment should not enable. Set `VERSION` to the release you want: the
-newest is on the [Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases),
-and the release a platform version is built against is pinned in the platform's
-`.github/plugin-pins.json`. The SDK and the core transports are already in the Hegemony
-images, which is why the example installs with `--no-deps`.
+wheel names a deployment should not enable. Set `VERSION` to the release your Hegemony
+version pins in its `.github/plugin-pins.json` (see [Compatibility](#compatibility)); the
+newest is on the [Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases).
+The SDK and the core transports are already in the Hegemony images, which is why the
+example installs with `--no-deps`.
 
 ```bash
-VERSION=0.3.0
+VERSION=X.Y.Z   # a release tag without the leading v; see Compatibility
 API_CONTAINER=<your API container name>
 WORKER_CONTAINER=<your worker container name>
 
@@ -139,6 +139,19 @@ done
 
 These Docker-command installs are runtime changes. Re-run them after recreating a container
 or replacing the image.
+
+## Compatibility
+
+Each Hegemony release pins one release of this repository in its
+`.github/plugin-pins.json` and is built and tested against exactly that
+release. Install the release your platform pins; the newest one is on the
+[Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases).
+
+| Hegemony | hegemony-notification-plugins |
+| --- | --- |
+| 1.0.0 | 0.3.2 |
+
+Hegemony versions before 1.0.0 were not released publicly.
 
 ## Develop A Notification Plugin
 
@@ -224,10 +237,10 @@ The rules a plugin follows:
   never a real endpoint.
 
 The SDK is not on PyPI. To develop against it, install a release wheel, or install it from
-this repository at a release tag:
+this repository at a release tag (replace `X.Y.Z` with the release your platform pins):
 
 ```bash
-uv pip install "git+https://github.com/hegemony-sh/hegemony-notification-plugins@v0.3.0#subdirectory=packages/notification_sdk"
+uv pip install "git+https://github.com/hegemony-sh/hegemony-notification-plugins@vX.Y.Z#subdirectory=packages/notification_sdk"
 ```
 
 Install your wheel into both the API and the worker, as in
@@ -277,11 +290,13 @@ available for trying the lockstep bump locally.
 
 ## Contributing, security and licence
 
-- Every commit needs a DCO sign-off (`git commit -s`). See
-  [Contributing](CONTRIBUTING.md).
-- Please follow the [Code of Conduct](CODE_OF_CONDUCT.md).
-- Report vulnerabilities privately, as described in
-  [Security](SECURITY.md); do not open a public issue for them.
+- Read [Contributing](CONTRIBUTING.md) first. Every commit needs a DCO sign-off
+  (`git commit -s`) and follows Conventional Commits, because merges to `main`
+  drive releases: `feat`, `fix`, `perf` and `revert` commits publish a new
+  version.
+- Report vulnerabilities privately, as [SECURITY.md](SECURITY.md) describes, and
+  do not open public issues for them.
+- Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 - Licensed under `AGPL-3.0-or-later`. See [Licensing](LICENSING.md).
 
 [![FOSSA license report](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhegemony-sh%2Fhegemony-notification-plugins?ref=badge_large&issueType=license)
