@@ -151,8 +151,8 @@ the next tag already exists and never replaces published assets: fix forward
 with a new commit, which becomes the next release. The shared workflow creates
 a build-provenance attestation for the wheels and `SHA256SUMS` only while the
 repository is public, because GitHub attestations need a public repository (or
-an Enterprise plan). The releases cut so far, up to `v0.3.0`, were cut while
-the repository was private and ship checksums only.
+an Enterprise plan), so a release cut while the repository was private ships
+checksums only.
 
 One failure a re-run cannot repair: semantic-release pushes the release
 commit and the `vX.Y.Z` tag before it publishes the GitHub Release, so if
