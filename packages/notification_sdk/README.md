@@ -75,3 +75,48 @@ destination type with its own `send` coroutine via
 `SDK_ABI_VERSION` is bumped only on incompatible changes to the registration
 contract. The platform exposes its value as `registry.api_version` so a plugin
 can self-gate if needed.
+
+## API reference
+
+Import public contracts from `hegemony_notification_sdk`. This SDK exposes
+Python interfaces, not an HTTP endpoint.
+
+| Interface | Inputs | Result and calling convention |
+| --- | --- | --- |
+| `register_destination_type` | Keyword-only destination type, display name, description, `send`, and optional configuration schema | Synchronous registration; returns `None` |
+| `register_preset` | The same identity fields, base transport, pure `build_config`, and optional configuration schema | Synchronous registration; returns `None` |
+| `BuildConfigFn` | Configuration dictionary | Synchronously returns the base transport's configuration dictionary; no I/O or secret resolution |
+| `SendFn` | `NotificationSendContext` | Await the send coroutine; returns `None` on success and raises on failure |
+
+`NotificationSendContext` carries the configuration dictionary, message title,
+message body and injected `NotificationServices`. The host formats the title
+and body before dispatch. A transport uses these services:
+
+| Service | Inputs | Result and calling convention |
+| --- | --- | --- |
+| `resolve_secret_ref` | Reference or `None`; keyword-only `source` | Async; await for a secret string or `None` |
+| `validate_secret_ref` | Reference; keyword-only field name and optional required flag | Synchronous; normalized reference or `None`; raises on invalid input |
+| `render_message` | Template; keyword-only title, body and optional JSON-escaping flag | Synchronous; rendered string |
+| `render_template` | Full-scope template string | Async; await for the resolved string |
+| `contains_template` | String | Synchronous; boolean |
+
+For example, use
+`await ctx.services.resolve_secret_ref(ref, source="notification.my_plugin")`.
+Keep resolved secrets out of logs and error messages. Presets pass protected
+references through unchanged.
+
+From the repository root, render complete signatures and docstrings with:
+
+```bash
+uv sync --frozen --all-packages
+uv run python -m pydoc hegemony_notification_sdk
+uv run python -m pydoc hegemony_notification_sdk.registry
+uv run python -m pydoc hegemony_notification_sdk.services
+```
+
+For local HTML browsing, run `uv run python -m pydoc -b`, open the SDK module,
+and follow its class/module links; stop the server when finished. With an
+installed SDK, omit `uv run`. Transport configuration and preset fields are
+documented in the [core transports](../../plugins/notification_core_transports/README.md),
+[Shoutrrr presets](../../plugins/notification_shoutrrr_presets/README.md), and
+[webhook presets](../../plugins/notification_webhook_presets/README.md) references.
