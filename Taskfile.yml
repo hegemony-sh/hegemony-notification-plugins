@@ -52,6 +52,11 @@ tasks:
     cmds:
       - uv run pytest
 
+  fuzz:replay:
+    desc: Replay the fuzz regression corpus without mutation
+    cmds:
+      - uv run --frozen --all-packages --group fuzz python fuzz/run_campaign.py --seconds 0
+
   test:verbose:
     desc: Run Python tests with verbose output
     cmds:
@@ -107,5 +112,6 @@ tasks:
       - task: sync
       - task: lint
       - task: test
+      - task: fuzz:replay
       - task: build
       - task: smoke

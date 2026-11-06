@@ -29,6 +29,7 @@ class Services:
 
 @atheris.instrument_func
 def test_one_input(data: bytes) -> None:
+    """Compare signatures with an independent oracle and reject invalid policies."""
     fdp = atheris.FuzzedDataProvider(data)
     timestamped = fdp.ConsumeBool()
     prefix = fdp.ConsumeUnicodeNoSurrogates(32)
