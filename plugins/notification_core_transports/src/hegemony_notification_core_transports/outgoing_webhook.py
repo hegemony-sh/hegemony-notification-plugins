@@ -43,8 +43,10 @@ def _redact_url(url: str) -> str:
     """Return a safe URL summary (scheme + host) without secrets."""
     try:
         parsed = urlparse(url)
-        scheme = parsed.scheme or "http"
-        hostname = parsed.hostname or parsed.netloc or "unknown"
+        scheme = parsed.scheme if parsed.scheme in ("http", "https") else "http"
+        # netloc can still contain userinfo when the hostname is absent.
+        # Never use that raw authority as a redaction fallback.
+        hostname = parsed.hostname or "unknown"
         port = f":{parsed.port}" if parsed.port else ""
         safe_path = "/…" if parsed.path else "/"
         return f"{scheme}://{hostname}{port}{safe_path}"

@@ -190,3 +190,29 @@ async def test_webhook_rejects_credentialed_url():
     services = FakeServices()
     with pytest.raises(ValueError, match="credentials"):
         await outgoing_webhook.send(_ctx({"url": "https://user:pass@example.com/hook"}, services))
+
+
+@pytest.mark.parametrize(
+    "authority", ["synthetic-user@", "synthetic-user:synthetic-password@", "synthetic-user@:80"]
+)
+def test_webhook_redaction_never_falls_back_to_raw_userinfo(authority):
+    from hegemony_notification_core_transports.outgoing_webhook import _redact_url
+
+    summary = _redact_url(f"https://{authority}/private-path?token=synthetic-query")
+    for sensitive in ("synthetic-user", "synthetic-password", "private-path", "synthetic-query"):
+        assert sensitive not in summary
+    assert "unknown" in summary
+
+
+@pytest.mark.parametrize("prefix", ["synthetic-user", "SYNTHETIC-USER", "token123"])
+def test_webhook_redaction_does_not_expose_a_username_as_the_scheme(prefix):
+    from hegemony_notification_core_transports.outgoing_webhook import _redact_url
+
+    assert _redact_url(f"{prefix}:synthetic-password@example.com/private") == "http://unknown/…"
+
+
+@pytest.mark.parametrize("scheme", ["http", "https", "HTTP", "HTTPS"])
+def test_webhook_redaction_preserves_supported_schemes(scheme):
+    from hegemony_notification_core_transports.outgoing_webhook import _redact_url
+
+    assert _redact_url(f"{scheme}://example.com/private") == f"{scheme.lower()}://example.com/…"
