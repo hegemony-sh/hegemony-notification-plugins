@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 Security reports are handled privately. Please do not open a public GitHub issue for vulnerabilities, suspected vulnerabilities, leaked secrets, or exploit details.
 
-This repository holds the notification SDK and plugin wheels of [Hegemony](https://github.com/hegemony-sh/hegemony). Vulnerabilities in the platform itself are reported the same way, to the same address; see the platform's [Security Policy](https://github.com/hegemony-sh/hegemony/blob/develop/SECURITY.md).
+This repository holds the notification SDK and plugin wheels of [Hegemony](https://github.com/hegemony-sh/hegemony). For vulnerabilities in the platform itself, follow the reporting instructions in the platform's [Security Policy](https://github.com/hegemony-sh/hegemony/blob/develop/SECURITY.md).
 
 ## Supported versions
 
@@ -19,7 +19,15 @@ The platform pins the exact release it is built against, and its [Security Polic
 
 ## Reporting a vulnerability
 
-Report vulnerabilities privately by emailing [security@hegemony.sh](mailto:security@hegemony.sh).
+Use [GitHub private vulnerability reporting](https://github.com/hegemony-sh/hegemony-notification-plugins/security/advisories/new)
+to report a vulnerability in this repository. The HTTPS form keeps the report
+private to the reporter and authorized advisory collaborators until publication.
+You can also open **Security → Advisories → Report a vulnerability** in this
+repository. A GitHub account is required.
+
+If you cannot use GitHub, email [security@hegemony.sh](mailto:security@hegemony.sh)
+for initial contact and to arrange a confidential way to share sensitive details.
+Do not send sensitive exploit details in unencrypted email or public issues.
 
 Please include as much detail as you can safely share:
 
