@@ -1,3 +1,10 @@
+## [0.3.3](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.3.2...v0.3.3) (2026-11-06)
+
+### Bug Fixes
+
+* **webhook:** redact credentials parsed as URL schemes ([6b24f6d](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/6b24f6df808dc8d376f155e9bb0083bcc6c24e87))
+* **webhook:** redact userinfo when the hostname is missing ([35c9ee4](https://github.com/hegemony-sh/hegemony-notification-plugins/commit/35c9ee4cad3714f9611e8cbbbe7e2fbd792955e2))
+
 ## [0.3.2](https://github.com/hegemony-sh/hegemony-notification-plugins/compare/v0.3.1...v0.3.2) (2026-10-26)
 
 ### Bug Fixes
