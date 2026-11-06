@@ -20,8 +20,10 @@ with atheris.instrument_imports(include=["hegemony_notification_core_transports"
 
 @atheris.instrument_func
 def test_one_input(data: bytes) -> None:
+    """Check URL acceptance and keep credentials out of diagnostic summaries."""
     raw = data[:16384].decode("utf-8", errors="replace")
-    assert isinstance(_redact_url(raw), str)
+    summary = _redact_url(raw)
+    assert summary == "<redacted>" or summary.startswith(("http://", "https://"))
     try:
         normalized = _validate_resolved_webhook_url(raw)
     except ValueError:
@@ -37,6 +39,8 @@ def test_one_input(data: bytes) -> None:
     url = "https://" + host + path + "?token=synthetic-query#synthetic-fragment"
     assert _validate_resolved_webhook_url("  " + url + "  ") == url
     assert _redact_url(url) == "https://" + host + "/…"
+    username = "synthetic-user" + str(fdp.ConsumeIntInRange(0, 999))
+    assert _redact_url(username + ":synthetic-password@" + host + path) == "http://unknown/…"
     for destination in (host, ""):
         credential_url = (
             "https://synthetic-user:synthetic-password@"

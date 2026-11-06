@@ -21,6 +21,8 @@ SEEDS = {
         "https://[::1]/path",
         "https://host.example:99999/path",
         "file:///tmp/example",
+        "synthetic-user:synthetic-password@example.com/private",
+        "HTTPS://webhook.example/private",
         "https://[invalid/",
         "https://webhook.example/path\r\n",
     ],
@@ -35,6 +37,7 @@ SEEDS = {
 
 
 def seed_corpus(root: Path) -> None:
+    """Add deterministic regression inputs without replacing discovered corpus files."""
     for name, seeds in SEEDS.items():
         directory = root / name
         directory.mkdir(parents=True, exist_ok=True)
