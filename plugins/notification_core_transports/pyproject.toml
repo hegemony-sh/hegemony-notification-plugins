@@ -7,14 +7,32 @@
 name = "hegemony-notification-core-transports"
 version = "0.3.3"
 description = "Core notification transports (email, shoutrrr, outgoing_webhook) for Hegemony"
+readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE-*.txt"]
 requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+]
 dependencies = [
     "hegemony-notification-sdk==0.3.3",
     "aiosmtplib>=5.1.2",
     "httpx>=0.27.0",
 ]
+
+[project.urls]
+Homepage = "https://hegemony.sh"
+Documentation = "https://hegemony.sh"
+Source = "https://github.com/hegemony-sh/hegemony-notification-plugins"
+Issues = "https://github.com/hegemony-sh/hegemony-notification-plugins/issues"
+Changelog = "https://github.com/hegemony-sh/hegemony-notification-plugins/blob/main/CHANGELOG.md"
 
 [project.entry-points."hegemony.notification_providers"]
 core_transports = "hegemony_notification_core_transports:register"
