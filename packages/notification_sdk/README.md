@@ -25,7 +25,7 @@ my_plugin = "my_plugin:register"
 ```
 
 The SDK is released together with the plugins in this repository, under one
-version. From the first release after 0.3.3 it is on PyPI
+version. From 0.3.3 on it is on PyPI
 (`uv pip install hegemony-notification-sdk==X.Y.Z` or
 `pip install hegemony-notification-sdk==X.Y.Z`); the release workflow uploads it
 with trusted publishing and PEP 740 attestations. Each GitHub release carries

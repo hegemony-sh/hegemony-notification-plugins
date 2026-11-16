@@ -30,7 +30,7 @@ two optional packs of friendly presets:
 | `hegemony-notification-shoutrrr-presets` | Telegram, Discord, Slack and Pushover destinations over `shoutrrr`. | Opt-in |
 | `hegemony-notification-webhook-presets` | Webex incoming webhook and Teams (Power Automate) destinations over `outgoing_webhook`. | Opt-in |
 
-From the first release after 0.3.3, the packages are published on PyPI. Every
+From 0.3.3 on, the packages are published on PyPI. Every
 GitHub Release carries the same wheels and sdists, a `SHA256SUMS` file and,
 for releases cut while the repository is public, an SLSA provenance bundle.
 See [Install From A Release](#install-from-a-release).
@@ -94,9 +94,10 @@ The SDK and the core transports are already in the Hegemony images, which is why
 examples install with `--no-deps`. Both examples install both preset packs into the API
 and worker; remove any package a deployment should not enable.
 
-From the first release after 0.3.3, the packages are on PyPI. The release workflow
-uploads them with trusted publishing and PEP 740 attestations, which PyPI shows on each
-file's page:
+From 0.3.3 on, the packages are on PyPI. 0.3.3 was uploaded by hand from its
+GitHub Release, without PEP 740 attestations. Later releases are uploaded by the
+release workflow with trusted publishing and PEP 740 attestations, which PyPI
+shows on each file's page:
 
 ```bash
 VERSION=X.Y.Z   # a release tag without the leading v; see Compatibility
@@ -281,7 +282,7 @@ The rules a plugin follows:
   never a real endpoint.
 
 To develop against the SDK, install it from PyPI (replace `X.Y.Z` with the release your
-platform pins; the SDK is on PyPI from the first release after 0.3.3):
+platform pins; the SDK is on PyPI from 0.3.3 on):
 
 ```bash
 uv pip install hegemony-notification-sdk==X.Y.Z
