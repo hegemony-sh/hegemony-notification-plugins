@@ -24,10 +24,15 @@ dependencies = ["hegemony-notification-sdk>=0.3,<0.4"]
 my_plugin = "my_plugin:register"
 ```
 
-The SDK is released together with the plugins in this repository, as a wheel
-attached to each GitHub release; it is not published on PyPI. While the major
-version is 0, an incompatible change to the contract is released as a new minor
-version, so depend on one minor line. The repository
+The SDK is released together with the plugins in this repository, under one
+version. From the first release after 0.3.3 it is on PyPI
+(`uv pip install hegemony-notification-sdk==X.Y.Z` or
+`pip install hegemony-notification-sdk==X.Y.Z`); the release workflow uploads it
+with trusted publishing and PEP 740 attestations. Each GitHub release carries
+the same wheel and sdist, a `SHA256SUMS` file and the SLSA provenance bundle
+that `gh attestation verify` checks. While the major version is 0, an
+incompatible change to the contract is released as a new minor version, so
+depend on one minor line. The repository
 [README](https://github.com/hegemony-sh/hegemony-notification-plugins/blob/main/README.md#develop-a-notification-plugin) walks through a complete
 transport and how to install a plugin into a Hegemony instance.
 

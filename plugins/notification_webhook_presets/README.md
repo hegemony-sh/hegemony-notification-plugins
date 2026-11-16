@@ -33,8 +33,13 @@ secret values.
 
 ## Install
 
-The wheel is a release asset of this repository, not a PyPI package. Install it
-into both the API and the worker as described in
+From the first release after 0.3.3 the package is on PyPI
+(`uv pip install hegemony-notification-webhook-presets==X.Y.Z` or `pip install hegemony-notification-webhook-presets==X.Y.Z`); the release
+workflow uploads it with trusted publishing and PEP 740 attestations. Each
+GitHub release of this repository carries the same wheel and sdist, a
+`SHA256SUMS` file and the SLSA provenance bundle that `gh attestation verify`
+checks. Install the release your Hegemony version pins into both the API and
+the worker as described in
 [Install From A Release](https://github.com/hegemony-sh/hegemony-notification-plugins/blob/main/README.md#install-from-a-release), then restart
 both.
 

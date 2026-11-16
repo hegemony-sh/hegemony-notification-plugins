@@ -14,3 +14,7 @@ extend-exclude = [
     # correction would be lost with the next release.
     "CHANGELOG.md",
 ]
+
+[default.extend-words]
+# in-toto, the attestation format: the provenance bundle is named *.intoto.jsonl.
+intoto = "intoto"

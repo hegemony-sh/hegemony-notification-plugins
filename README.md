@@ -30,8 +30,10 @@ two optional packs of friendly presets:
 | `hegemony-notification-shoutrrr-presets` | Telegram, Discord, Slack and Pushover destinations over `shoutrrr`. | Opt-in |
 | `hegemony-notification-webhook-presets` | Webex incoming webhook and Teams (Power Automate) destinations over `outgoing_webhook`. | Opt-in |
 
-The packages are published as GitHub release assets (wheels and a `SHA256SUMS`
-file), not on PyPI. See [Install From A Release](#install-from-a-release).
+From the first release after 0.3.3, the packages are published on PyPI. Every
+GitHub Release carries the same wheels and sdists, a `SHA256SUMS` file and,
+for releases cut while the repository is public, an SLSA provenance bundle.
+See [Install From A Release](#install-from-a-release).
 
 ## How it relates to the platform
 
@@ -85,13 +87,39 @@ reloads its entry points. Do not use `--system`; Hegemony runs from `/opt/venv`.
 
 ## Install From A Release
 
-Released wheels are published with a `SHA256SUMS` file. Verify downloaded wheels before
-installing them. The example installs both preset packs into the API and worker; remove any
-wheel names a deployment should not enable. Set `VERSION` to the release your Hegemony
-version pins in its `.github/plugin-pins.json` (see [Compatibility](#compatibility)); the
-newest is on the [Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases).
+Install the release your Hegemony version pins in its `.github/plugin-pins.json`
+(see [Compatibility](#compatibility)); the newest is on the
+[Releases page](https://github.com/hegemony-sh/hegemony-notification-plugins/releases).
 The SDK and the core transports are already in the Hegemony images, which is why the
-example installs with `--no-deps`.
+examples install with `--no-deps`. Both examples install both preset packs into the API
+and worker; remove any package a deployment should not enable.
+
+From the first release after 0.3.3, the packages are on PyPI. The release workflow
+uploads them with trusted publishing and PEP 740 attestations, which PyPI shows on each
+file's page:
+
+```bash
+VERSION=X.Y.Z   # a release tag without the leading v; see Compatibility
+API_CONTAINER=<your API container name>
+WORKER_CONTAINER=<your worker container name>
+
+for CONTAINER in "${API_CONTAINER}" "${WORKER_CONTAINER}"; do
+  docker exec -u root -it "${CONTAINER}" bash -lc "
+uv pip install --python /opt/venv/bin/python --no-deps \
+  hegemony-notification-shoutrrr-presets==${VERSION} \
+  hegemony-notification-webhook-presets==${VERSION}
+"
+  docker restart "${CONTAINER}"
+done
+```
+
+Outside a Hegemony container, `uv pip install hegemony-notification-sdk==X.Y.Z` or
+`pip install hegemony-notification-sdk==X.Y.Z` works the same way for any of the
+packages.
+
+The GitHub Release carries the same wheels and sdists, published with a `SHA256SUMS`
+file. To install from the Release instead, for example a release made before the
+packages were on PyPI, verify the downloaded wheels before installing them:
 
 ```bash
 VERSION=X.Y.Z   # a release tag without the leading v; see Compatibility
@@ -119,6 +147,21 @@ rm -rf \"\${tmp}\"
   docker restart "${CONTAINER}"
 done
 ```
+
+A release cut while the repository is public also carries
+`hegemony-notification-plugins-X.Y.Z.intoto.jsonl`, a Sigstore bundle with the signed
+SLSA build provenance of every wheel, sdist and `SHA256SUMS`. Verify a downloaded wheel
+or sdist with the [GitHub CLI](https://cli.github.com/):
+
+```bash
+gh attestation verify hegemony_notification_shoutrrr_presets-X.Y.Z-py3-none-any.whl \
+  --repo hegemony-sh/hegemony-notification-plugins \
+  --signer-workflow hegemony-sh/hegemony-github-workflows/.github/workflows/plugin-release.yml
+```
+
+To verify offline, add `--bundle hegemony-notification-plugins-X.Y.Z.intoto.jsonl
+--custom-trusted-root trusted_root.jsonl`, with a trusted root fetched earlier on a
+connected machine by `gh attestation trusted-root > trusted_root.jsonl`.
 
 Or build local wheels from this repository and copy them into the running dev containers:
 
@@ -237,8 +280,15 @@ The rules a plugin follows:
   `FakeServices`. Use example hosts (`example.com`) and synthetic credentials in tests,
   never a real endpoint.
 
-The SDK is not on PyPI. To develop against it, install a release wheel, or install it from
-this repository at a release tag (replace `X.Y.Z` with the release your platform pins):
+To develop against the SDK, install it from PyPI (replace `X.Y.Z` with the release your
+platform pins; the SDK is on PyPI from the first release after 0.3.3):
+
+```bash
+uv pip install hegemony-notification-sdk==X.Y.Z
+```
+
+For an earlier release, install its wheel from the GitHub Release, or install it from
+this repository at the release tag:
 
 ```bash
 uv pip install "git+https://github.com/hegemony-sh/hegemony-notification-plugins@vX.Y.Z#subdirectory=packages/notification_sdk"
