@@ -160,9 +160,9 @@ private ships checksums only.
 
 If the `pypi` job fails after the GitHub Release is published, re-run that
 job: it uploads with `skip-existing`, so files already on PyPI are left as
-they are. It downloads the run's `release-assets` artifact, which is kept for
-one day, so re-run it within that day. PyPI never accepts a file name twice,
-even after a delete.
+they are. It downloads the files from the published GitHub Release and checks
+them against `SHA256SUMS` and their attestations, so a re-run works at any
+time. PyPI never accepts a file name twice, even after a delete.
 
 One failure a re-run cannot repair: semantic-release pushes the release
 commit and the `vX.Y.Z` tag before it publishes the GitHub Release, so if
