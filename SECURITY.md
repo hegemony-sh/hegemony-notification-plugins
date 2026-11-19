@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 Security reports are handled privately. Please do not open a public GitHub issue for vulnerabilities, suspected vulnerabilities, leaked secrets, or exploit details.
 
-This repository holds the notification SDK and plugin wheels of [Hegemony](https://github.com/hegemony-sh/hegemony). For vulnerabilities in the platform itself, follow the reporting instructions in the platform's [Security Policy](https://github.com/hegemony-sh/hegemony/blob/develop/SECURITY.md).
+This repository holds the notification SDK and plugin wheels of [Hegemony](https://github.com/hegemony-sh/hegemony). For vulnerabilities in the platform itself, follow the reporting instructions in the platform's [Security Policy](https://github.com/hegemony-sh/hegemony/blob/main/SECURITY.md).
 
 ## Supported versions
 
 Every package in this repository is released together under one version, `vX.Y.Z`, from the `main` branch. There are no maintenance branches: a security fix is merged to `main` and published as a new release, which is a patch release for a fix. Releases are immutable and are never changed after they are published, so run the newest release.
 
-The platform pins the exact release it is built against, and its [Security Policy](https://github.com/hegemony-sh/hegemony/blob/develop/SECURITY.md#supported-versions) sets which Hegemony versions receive security fixes.
+The platform pins the exact release it is built against, and its [Security Policy](https://github.com/hegemony-sh/hegemony/blob/main/SECURITY.md#supported-versions) sets which Hegemony versions receive security fixes.
 
 ## Reporting a vulnerability
 
